@@ -67,7 +67,6 @@ export function GamepadProfileManager({
   const { t, direction, currentLanguage } = useLanguage()
   const { controllerType, controllerTypeLabel, controllerAuthenticity, authenticityLabel } = useGamepadType()
   const [newProfileName, setNewProfileName] = useState("")
-  const [dialogOpen, setDialogOpen] = useState(false)
 
   // Create a new profile
   const handleCreateProfile = () => {
@@ -78,11 +77,8 @@ export function GamepadProfileManager({
       return;
     }
     
-    const result = saveProfile(newProfileName.trim());
-    if (result) {
-      setNewProfileName("");
-      setDialogOpen(false);
-    }
+    saveProfile(newProfileName.trim());
+    setNewProfileName("");
   }
 
   // Format date for display
@@ -102,7 +98,7 @@ export function GamepadProfileManager({
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={() => activeProfileId && updateProfile(activeProfileId)}
+            onClick={() => updateProfile(activeProfileId!)}
             disabled={!gamepadConnected || !activeProfileId}
           >
             <Save className="h-4 w-4 mr-2" />
@@ -149,7 +145,7 @@ export function GamepadProfileManager({
                   : 'الملفات الشخصية المحفوظة'} 
                 ({profiles.length})
               </h3>
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="ghost" size="sm" disabled={!gamepadConnected}>
                     <Plus className="h-4 w-4 mr-1" />
@@ -170,18 +166,15 @@ export function GamepadProfileManager({
                         value={newProfileName}
                         onChange={(e) => setNewProfileName(e.target.value)}
                         placeholder={currentLanguage === 'en' ? "Enter profile name" : "أدخل اسم الملف الشخصي"}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            handleCreateProfile();
-                          }
-                        }}
                       />
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button onClick={handleCreateProfile}>
-                      {currentLanguage === 'en' ? 'Create Profile' : 'إنشاء الملف الشخصي'}
-                    </Button>
+                    <DialogClose asChild>
+                      <Button onClick={handleCreateProfile}>
+                        {currentLanguage === 'en' ? 'Create Profile' : 'إنشاء الملف الشخصي'}
+                      </Button>
+                    </DialogClose>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -246,15 +239,7 @@ export function GamepadProfileManager({
                                 <Download className="h-4 w-4 mr-2" />
                                 {currentLanguage === 'en' ? 'Load Profile' : 'تحميل الملف الشخصي'}
                               </DropdownMenuItem>
-                              <DropdownMenuItem 
-                                onClick={() => {
-                                  if (confirm(currentLanguage === 'en' 
-                                    ? 'Are you sure you want to delete this profile?' 
-                                    : 'هل أنت متأكد أنك تريد حذف هذا الملف الشخصي؟')) {
-                                    deleteProfile(profile.id)
-                                  }
-                                }}
-                              >
+                              <DropdownMenuItem onClick={() => deleteProfile(profile.id)}>
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 {currentLanguage === 'en' ? 'Delete Profile' : 'حذف الملف الشخصي'}
                               </DropdownMenuItem>

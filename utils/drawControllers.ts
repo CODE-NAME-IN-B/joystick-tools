@@ -253,7 +253,7 @@ export function drawXboxController(
   ctx.strokeStyle = "#222"
   ctx.lineWidth = 2 * scale
   ctx.stroke()
-  
+
   // Draw "Y" letter
   ctx.fillStyle = "#111"
   ctx.fillText("Y", faceButtonCenterX, faceButtonCenterY - faceButtonOffset)
@@ -328,10 +328,10 @@ export function drawXboxController(
     ctx.fillStyle = "#555"
   }
   
-  ctx.fill()
-  ctx.strokeStyle = "#222"
-  ctx.lineWidth = 2 * scale
-  ctx.stroke()
+    ctx.fill()
+    ctx.strokeStyle = "#222"
+    ctx.lineWidth = 2 * scale
+    ctx.stroke()
   
   // Draw "LT" text
   ctx.fillStyle = "#fff"
@@ -370,10 +370,10 @@ export function drawXboxController(
     ctx.fillStyle = "#555"
   }
   
-  ctx.fill()
-  ctx.strokeStyle = "#222"
-  ctx.lineWidth = 2 * scale
-  ctx.stroke()
+    ctx.fill()
+    ctx.strokeStyle = "#222"
+    ctx.lineWidth = 2 * scale
+    ctx.stroke()
   
   // Draw "RT" text
   ctx.fillStyle = "#fff"
@@ -778,10 +778,10 @@ export function drawPlaystationController(
     ctx.fillStyle = "#444"
   }
   
-  ctx.fill()
-  ctx.strokeStyle = "#222"
-  ctx.lineWidth = 2 * scale
-  ctx.stroke()
+    ctx.fill()
+    ctx.strokeStyle = "#222"
+    ctx.lineWidth = 2 * scale
+    ctx.stroke()
   
   // Draw "L2" text
   ctx.fillStyle = "#fff"
@@ -820,10 +820,10 @@ export function drawPlaystationController(
     ctx.fillStyle = "#444"
   }
   
-  ctx.fill()
-  ctx.strokeStyle = "#222"
-  ctx.lineWidth = 2 * scale
-  ctx.stroke()
+    ctx.fill()
+    ctx.strokeStyle = "#222"
+    ctx.lineWidth = 2 * scale
+    ctx.stroke()
   
   // Draw "R2" text
   ctx.fillStyle = "#fff"

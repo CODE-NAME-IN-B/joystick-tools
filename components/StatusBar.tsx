@@ -155,7 +155,7 @@ export function StatusBar({ gamepadState, theme, toggleTheme }: StatusBarProps) 
                       </Badge>
                     </div>
                   </div>
-                </div>
+          </div>
               </DialogContent>
             </Dialog>
           </>
