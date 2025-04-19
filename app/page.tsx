@@ -11,9 +11,20 @@ import { useState } from "react"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { GamepadTypeProvider } from "@/contexts/GamepadTypeContext"
 import { LanguageSwitcher } from "@/components/LanguageSwitcher"
+import { AboutTab } from "@/components/AboutTab"
 
 export default function Home() {
-  const { gamepadState, calibrationData, setCalibrationData } = useGamepadService()
+  const { 
+    gamepadState, 
+    calibrationData, 
+    setCalibrationData,
+    profiles,
+    activeProfileId,
+    saveProfile,
+    updateProfile,
+    deleteProfile,
+    loadProfile
+  } = useGamepadService()
   const { theme, toggleTheme } = useTheme()
   const [activeTab, setActiveTab] = useState("visualization")
   const { t, direction, isRTL } = useLanguage()
@@ -51,7 +62,19 @@ export default function Home() {
                   gamepadState={gamepadState}
                   calibrationData={calibrationData}
                   setCalibrationData={setCalibrationData}
+                  profiles={profiles}
+                  activeProfileId={activeProfileId}
+                  saveProfile={saveProfile}
+                  loadProfile={loadProfile}
+                  updateProfile={updateProfile}
+                  deleteProfile={deleteProfile}
                 />
+              )}
+
+              {activeTab === "about" && (
+                <div className="space-y-6">
+                  <AboutTab />
+                </div>
               )}
             </div>
           </div>

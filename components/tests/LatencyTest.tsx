@@ -7,14 +7,15 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { useLanguage } from "@/contexts/LanguageContext"
 import { useGamepadType } from "@/contexts/GamepadTypeContext"
+import Image from "next/image"
 
 interface LatencyTestProps {
   gamepadState: GamepadState
 }
 
 export function LatencyTest({ gamepadState }: LatencyTestProps) {
-  const { t, direction } = useLanguage()
-  const { getButtonName } = useGamepadType()
+  const { t, direction, currentLanguage } = useLanguage()
+  const { controllerType, getButtonName, getButtonImage } = useGamepadType()
 
   const [testActive, setTestActive] = useState(false)
   const [testButton, setTestButton] = useState<number | null>(null)
@@ -26,6 +27,13 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const prevButtonStates = useRef<boolean[]>([])
+
+  // Button options appropriate for each controller type
+  const buttonOptions = {
+    xbox: [0, 1, 2, 3], // A, B, X, Y
+    playstation: [0, 1, 2, 3], // ×, ○, □, △
+    generic: [0, 1, 2, 3], // Face buttons
+  };
 
   // Initialize and update previous button states when not in a test
   useEffect(() => {
@@ -51,7 +59,9 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
       // Check if any buttons are currently pressed
       const anyButtonPressed = gamepadState.buttons.some(b => b.pressed);
       if (anyButtonPressed) {
-        alert("Please release all buttons before starting the test.");
+        alert(currentLanguage === 'en' 
+          ? "Please release all buttons before starting the test." 
+          : "يرجى تحرير جميع الأزرار قبل بدء الاختبار.");
         setTestActive(false);
         return;
       }
@@ -72,9 +82,9 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
 
   // Run a single test iteration
   const runTest = () => {
-    // Choose a random button to test (A, B, X, Y buttons are indices 0-3)
-    const buttonOptions = [0, 1, 2, 3]; // A, B, X, Y buttons
-    const buttonIndex = buttonOptions[Math.floor(Math.random() * buttonOptions.length)]
+    // Choose a random button to test appropriate for the controller type
+    const options = buttonOptions[controllerType];
+    const buttonIndex = options[Math.floor(Math.random() * options.length)];
     
     setTestButton(buttonIndex)
     setPromptTime(performance.now())
@@ -156,6 +166,47 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
     }
   }, [])
 
+  // Function to render the button prompt based on controller type
+  const renderButtonPrompt = () => {
+    if (testButton === null) return null;
+    
+    const buttonName = getButtonName(testButton);
+    
+    // Attempt to use an image if available, otherwise use text
+    try {
+      return (
+        <div className="text-center">
+          <div className="flex justify-center items-center mb-4">
+            <div className="text-6xl font-bold mr-2">{buttonName}</div>
+            <div className="relative w-16 h-16">
+              <Image 
+                src={`/images/buttons/${controllerType}/${buttonName.toLowerCase()}.png`}
+                alt={buttonName}
+                width={64}
+                height={64}
+                style={{ objectFit: "contain" }}
+                onError={(e) => {
+                  // Fallback if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
+              />
+            </div>
+          </div>
+          <div className="text-sm text-muted-foreground">{t.latencyTest.pressButton}</div>
+        </div>
+      );
+    } catch (e) {
+      // Fallback to just the button name
+      return (
+        <div className="text-center">
+          <div className="text-6xl font-bold mb-4">{buttonName}</div>
+          <div className="text-sm text-muted-foreground">{t.latencyTest.pressButton}</div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className={`flex justify-between items-center ${direction === "rtl" ? "flex-row-reverse" : ""}`}>
@@ -180,10 +231,7 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
         <Card>
           <CardContent className="p-6 flex flex-col items-center justify-center">
             {testButton !== null ? (
-              <div className="text-center">
-                <div className="text-6xl font-bold mb-4">{getButtonName(testButton)}</div>
-                <div className="text-sm text-muted-foreground">{t.latencyTest.pressButton}</div>
-              </div>
+              renderButtonPrompt()
             ) : (
               <div className="text-center">
                 <div className="text-xl font-medium mb-2">{t.latencyTest.nextButton}</div>
@@ -199,7 +247,7 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
           <h4 className="text-sm font-medium">{t.latencyTest.results}</h4>
           <div className={`grid grid-cols-5 gap-2 ${direction === "rtl" ? "flex flex-row-reverse" : ""}`}>
             {results.map((result, index) => (
-              <Card key={index}>
+              <Card key={index} className={responseTime === result ? "border-primary" : ""}>
                 <CardContent className="p-3 text-center">
                   <div className="text-xs text-muted-foreground">
                     {t.latencyTest.test} {index + 1}
