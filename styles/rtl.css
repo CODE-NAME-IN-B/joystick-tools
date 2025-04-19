@@ -1,0 +1,193 @@
+/* RTL (Right-to-Left) support for Arabic language */
+
+/* Base RTL adjustments */
+[dir="rtl"] {
+  /* Flip icons that indicate direction */
+  .rtl-flip {
+    transform: scaleX(-1);
+  }
+  
+  /* Text alignment adjustments */
+  .text-left {
+    text-align: right;
+  }
+  
+  .text-right {
+    text-align: left;
+  }
+  
+  /* Margin and padding flipping */
+  .ml-auto {
+    margin-left: 0;
+    margin-right: auto;
+  }
+  
+  .mr-auto {
+    margin-right: 0;
+    margin-left: auto;
+  }
+  
+  /* Padding adjustments */
+  .pl-1, .pl-2, .pl-3, .pl-4, .pl-5, .pl-6, .pl-8, .pl-10, .pl-12 {
+    padding-left: 0;
+    padding-right: var(--tw-padding-x, 0.25rem);
+  }
+  
+  .pr-1, .pr-2, .pr-3, .pr-4, .pr-5, .pr-6, .pr-8, .pr-10, .pr-12 {
+    padding-right: 0;
+    padding-left: var(--tw-padding-x, 0.25rem);
+  }
+  
+  /* Margin adjustments */
+  .ml-1, .ml-2, .ml-3, .ml-4, .ml-5, .ml-6, .ml-8, .ml-10, .ml-12 {
+    margin-left: 0;
+    margin-right: var(--tw-margin-x, 0.25rem);
+  }
+  
+  .mr-1, .mr-2, .mr-3, .mr-4, .mr-5, .mr-6, .mr-8, .mr-10, .mr-12 {
+    margin-right: 0;
+    margin-left: var(--tw-margin-x, 0.25rem);
+  }
+  
+  /* Flexbox direction adjustments */
+  .flex-row {
+    flex-direction: row-reverse;
+  }
+  
+  /* Border adjustments */
+  .border-l {
+    border-left: none;
+    border-right-width: 1px;
+    border-right-style: solid;
+  }
+  
+  .border-r {
+    border-right: none;
+    border-left-width: 1px;
+    border-left-style: solid;
+  }
+  
+  /* Adjust rounded corners */
+  .rounded-l {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+  }
+  
+  .rounded-r {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+  }
+  
+  /* Adjust input fields for RTL */
+  input, textarea {
+    text-align: right;
+  }
+  
+  /* Adjust form controls and their labels */
+  .form-control {
+    flex-direction: row-reverse;
+  }
+  
+  /* Navigation adjustments */
+  .nav-item {
+    margin-right: 0;
+    margin-left: 1rem;
+  }
+  
+  /* Adjust dropdown menus */
+  .dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+}
+
+/* Arabic typography settings */
+html[lang="ar"] {
+  /* Use the Arabic font family we defined in Tailwind */
+  font-family: theme('fontFamily.arabic');
+  
+  /* Adjust line height for Arabic text which may need more vertical space */
+  line-height: 1.6;
+  
+  /* Improve readability of Arabic text */
+  letter-spacing: 0;
+  
+  /* Set appropriate font weight for better legibility */
+  font-weight: 400;
+}
+
+/* Animation direction adjustments */
+[dir="rtl"] .slide-in {
+  animation-direction: reverse;
+}
+
+/* Adjust specific components for RTL */
+[dir="rtl"] .control-panel .control-item {
+  margin-right: 0;
+  margin-left: 1rem;
+}
+
+[dir="rtl"] .input-group-prepend {
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+[dir="rtl"] .input-group-append {
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+/* Adjust progress indicators */
+[dir="rtl"] .progress-steps {
+  flex-direction: row-reverse;
+}
+
+/* Adjust gamepad visualizer for RTL */
+[dir="rtl"] .gamepad-visualizer {
+  transform: scaleX(-1);
+}
+
+/* RTL-specific shadow adjustments */
+[dir="rtl"] .shadow-left {
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+[dir="rtl"] .shadow-right {
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+}
+
+/* RTL responsive adjustments */
+@media (max-width: 768px) {
+  [dir="rtl"] .sidebar {
+    right: 0;
+    left: auto;
+    transform: translateX(100%);
+  }
+  
+  [dir="rtl"] .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* RTL Grid support */
+.lg-rtl-grid {
+  direction: rtl;
+}
+
+.lg-rtl-grid > * {
+  direction: rtl;
+}
+
+/* RTL specific UI adjustments for tabs */
+[dir="rtl"] .rtl-direction {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+/* RTL specific adjustments for canvas */
+.rtl-canvas {
+  direction: ltr; /* Keep canvas direction as LTR */
+  transform: scaleX(-1); /* Flip canvas horizontally for proper visualization */
+} 
