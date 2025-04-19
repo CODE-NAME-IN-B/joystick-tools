@@ -22,16 +22,17 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
   const [countdown, setCountdown] = useState(3)
   const [promptTime, setPromptTime] = useState<number | null>(null)
   const [responseTime, setResponseTime] = useState<number | null>(null)
+  const [waitingForRelease, setWaitingForRelease] = useState(false)
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const buttonStates = useRef<boolean[]>([])
+  const prevButtonStates = useRef<boolean[]>([])
 
-  // Store current button states for comparison
+  // Initialize and update previous button states when not in a test
   useEffect(() => {
-    if (gamepadState.connected) {
-      buttonStates.current = gamepadState.buttons.map((b) => b.pressed)
+    if (gamepadState.connected && !testActive) {
+      prevButtonStates.current = gamepadState.buttons.map((b) => b.pressed)
     }
-  }, [gamepadState])
+  }, [gamepadState, testActive])
 
   // Start test
   const startTest = () => {
@@ -41,6 +42,20 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
     setTestButton(null)
     setPromptTime(null)
     setResponseTime(null)
+    setWaitingForRelease(false)
+    
+    // Make sure all buttons are released before starting the test
+    if (gamepadState.connected) {
+      prevButtonStates.current = gamepadState.buttons.map(b => b.pressed)
+      
+      // Check if any buttons are currently pressed
+      const anyButtonPressed = gamepadState.buttons.some(b => b.pressed);
+      if (anyButtonPressed) {
+        alert("Please release all buttons before starting the test.");
+        setTestActive(false);
+        return;
+      }
+    }
 
     // Start countdown
     const countdownInterval = setInterval(() => {
@@ -58,9 +73,14 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
   // Run a single test iteration
   const runTest = () => {
     // Choose a random button to test (A, B, X, Y buttons are indices 0-3)
-    const buttonIndex = Math.floor(Math.random() * 4)
+    const buttonOptions = [0, 1, 2, 3]; // A, B, X, Y buttons
+    const buttonIndex = buttonOptions[Math.floor(Math.random() * buttonOptions.length)]
+    
     setTestButton(buttonIndex)
     setPromptTime(performance.now())
+    setWaitingForRelease(false)
+
+    console.log(`Test started for button: ${buttonIndex} (${getButtonName(buttonIndex)})`);
 
     // Set timeout for maximum response time (3 seconds)
     if (timeoutRef.current) {
@@ -69,6 +89,7 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
 
     timeoutRef.current = setTimeout(() => {
       if (testActive && testButton !== null) {
+        console.log("Test timed out");
         // Test timed out, move to next test or end
         handleTestCompletion()
       }
@@ -77,28 +98,42 @@ export function LatencyTest({ gamepadState }: LatencyTestProps) {
 
   // Check for button press responses
   useEffect(() => {
-    if (!testActive || testButton === null || promptTime === null) return
-
-    // Check if the test button was just pressed
-    if (gamepadState.connected && gamepadState.buttons[testButton]?.pressed && !buttonStates.current[testButton]) {
+    if (!testActive || testButton === null || promptTime === null || !gamepadState.connected) return
+    
+    // Skip checking if we're waiting for the button to be released
+    if (waitingForRelease) return;
+    
+    const currentButtonPressed = gamepadState.buttons[testButton]?.pressed;
+    
+    if (currentButtonPressed) {
       const now = performance.now()
       const latency = now - promptTime
+      console.log(`Button ${testButton} pressed. Latency: ${latency}ms`);
+      
       setResponseTime(latency)
       setResults((prev) => [...prev, latency])
+      setWaitingForRelease(true)
 
       // Clear timeout
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
       }
 
-      // Schedule next test
-      setTimeout(handleTestCompletion, 1500)
+      // Schedule next test after button is released
+      const checkReleaseInterval = setInterval(() => {
+        if (gamepadState.connected && !gamepadState.buttons[testButton].pressed) {
+          clearInterval(checkReleaseInterval);
+          setTimeout(handleTestCompletion, 1000);
+        }
+      }, 100);
     }
-  }, [gamepadState, testActive, testButton, promptTime])
+  }, [gamepadState, testActive, testButton, promptTime, waitingForRelease, getButtonName])
 
   // Handle completion of a test iteration
   const handleTestCompletion = () => {
     setTestButton(null)
+    setWaitingForRelease(false)
 
     // If we've done 5 tests, end the test
     if (results.length >= 4) {
