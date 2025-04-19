@@ -121,7 +121,7 @@ export function InputLog({ gamepadState }: InputLogProps) {
                           {entry.value ? t.dataVisualization.pressed : t.dataVisualization.released}
                         </span>
                       ) : (
-                        <span>{entry.value.toFixed(2)}</span>
+                        <span>{typeof entry.value === "number" ? entry.value.toFixed(2) : entry.value}</span>
                       )}
                     </div>
                   </div>

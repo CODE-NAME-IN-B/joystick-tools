@@ -109,39 +109,39 @@ export function CalibrationWizard({ gamepadState, calibrationData, setCalibratio
       const minMagnitude = Math.min(...leftStickMagnitudes.filter((m) => m > 0))
       const newLeftDeadZone = Math.max(0.05, Math.min(0.3, minMagnitude * 0.8))
 
-      setCalibrationData((prev) => ({
-        ...prev,
+      setCalibrationData({
+        ...calibrationData,
         deadZones: {
-          ...prev.deadZones,
+          ...calibrationData.deadZones,
           leftStick: newLeftDeadZone,
         },
-      }))
+      })
     } else if (step === 2 && rightStickSamples.length > 0) {
       // Calculate right stick dead zone
       const rightStickMagnitudes = rightStickSamples.map(([x, y]) => Math.sqrt(x * x + y * y))
       const minMagnitude = Math.min(...rightStickMagnitudes.filter((m) => m > 0))
       const newRightDeadZone = Math.max(0.05, Math.min(0.3, minMagnitude * 0.8))
 
-      setCalibrationData((prev) => ({
-        ...prev,
+      setCalibrationData({
+        ...calibrationData,
         deadZones: {
-          ...prev.deadZones,
+          ...calibrationData.deadZones,
           rightStick: newRightDeadZone,
         },
-      }))
+      })
     } else if (step === 3 && triggerSamples.length > 0) {
       // Calculate trigger dead zone
       const allTriggerValues = triggerSamples.flat()
       const minValue = Math.min(...allTriggerValues.filter((v) => v > 0))
       const newTriggerDeadZone = Math.max(0.05, Math.min(0.2, minValue * 0.8))
 
-      setCalibrationData((prev) => ({
-        ...prev,
+      setCalibrationData({
+        ...calibrationData,
         deadZones: {
-          ...prev.deadZones,
+          ...calibrationData.deadZones,
           triggers: newTriggerDeadZone,
         },
-      }))
+      })
     }
   }
 
