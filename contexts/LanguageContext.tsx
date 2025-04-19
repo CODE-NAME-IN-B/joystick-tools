@@ -5,6 +5,7 @@ import { translations, type SupportedLanguage, type Translation } from "@/lib/i1
 
 type LanguageContextType = {
   language: SupportedLanguage
+  currentLanguage: SupportedLanguage
   t: Translation
   setLanguage: (lang: SupportedLanguage) => void
   direction: "ltr" | "rtl"
@@ -59,7 +60,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   // Get current translations
   const t = translations[language]
 
-  return <LanguageContext.Provider value={{ language, t, setLanguage, direction, isRTL }}>{children}</LanguageContext.Provider>
+  return <LanguageContext.Provider value={{ language, currentLanguage: language, t, setLanguage, direction, isRTL }}>{children}</LanguageContext.Provider>
 }
 
 export function useLanguage() {
