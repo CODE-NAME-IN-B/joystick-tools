@@ -137,7 +137,7 @@ export type Translation = {
 // English translations
 export const en: Translation = {
   general: {
-    appTitle: "Gamepad Tester",
+    appTitle: "Joystick Tools",
     noGamepad: "No gamepad detected",
     connected: "Connected",
     notConnected: "Not connected",
@@ -277,7 +277,7 @@ export const en: Translation = {
 // Arabic translations
 export const ar: Translation = {
   general: {
-    appTitle: "اختبار وحدة التحكم",
+    appTitle: "أدوات عصا التحكم",
     noGamepad: "لم يتم اكتشاف وحدة تحكم",
     connected: "متصل",
     notConnected: "غير متصل",

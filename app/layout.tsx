@@ -29,6 +29,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 export const metadata = {
   generator: 'v0.dev',
-  title: 'Gamepad Tester',
-  description: 'Test and calibrate your gamepad controllers',
+  title: 'Joystick Tools',
+  description: 'Advanced tools for testing and calibrating your joysticks and gamepads',
 };
